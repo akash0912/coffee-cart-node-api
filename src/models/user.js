@@ -7,36 +7,38 @@ const userSchema = mongoose.Schema({
   email: {
     type: String,
     reqiured: true,
-     trim: true,
-     unique: true,
-     lowercase: true,
-     validate(value){
-         if(!validator.isEmail(value)){
-             throw new Error("Invalid Email")
-         }
-     }
+    trim: true,
+    unique: true,
+    lowercase: true,
+    validate(value) {
+      if (!validator.isEmail(value)) {
+        throw new Error("Invalid Email");
+      }
+    },
   },
 
-  password:{
-      type: String,
-      required: true,
-      trim: true,
-      minLength: 6,
-      validate(value){
-        if(value.length< 6){
-          throw new Error("Password length should be atleast 6.")
-        }
-        if (value.toLowerCase().includes("password")) {
-          throw new Error("Password must not include 'Password' string");
-        }
+  password: {
+    type: String,
+    required: true,
+    trim: true,
+    minLength: [6, "Password length should be atleast 6"],
+    validate(value) {
+      if (value.length < 6) {
+        throw new Error("Password length should be atleast 6.");
       }
+      if (value.toLowerCase().includes("password")) {
+        throw new Error("Password must not include 'Password' string");
+      }
+    },
   },
-  tokens:[{
-    token:{
-      type: String,
-      required: true
-    }
-  }]
+  tokens: [
+    {
+      token: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
 });
 
 userSchema.virtual("orders",{
@@ -75,7 +77,8 @@ userSchema.statics.findUserByCredentials = async (email, password)=>{
     throw new Error("Unable to Login")
   }
 
-  const isMatch = bcrypt.compare(password, user.password)
+  const isMatch = await bcrypt.compare(password, user.password)
+  
   if(!isMatch){
     throw new Error("Unable to login")
   }

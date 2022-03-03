@@ -7,8 +7,9 @@ router.post("/signup", async (req, res) => {
     const user = new User(req.body)
   await user.save();
   const token = await user.generateToken();
-  res.status(201).send({user, token})
+  res.status(201).send({user, token, expiresIn: 3600})
   }catch(e){
+    console.log(e)
     if(JSON.stringify(e).includes('email')){
     res.status(400).send({
         error: "EMAIL_ALREADY_IN_USE"
@@ -24,10 +25,17 @@ router.post("/signup", async (req, res) => {
 });
 
 router.post('/login',async(req, res)=>{
-  try{const user = await User.findUserByCredentials(req.body.email, req.body.password)
-  const token = await user.generateToken();
-    res.send({user, token})
+  try{
+    const user = await User.findUserByCredentials(req.body.email, req.body.password)
+    const token = await user.generateToken();
+    res.send({ user, token, expiresIn: 3600 });
     }catch(e){
+      console.log(e)
+      if (JSON.stringify(e).includes("Unable to Login")) {
+        res.status(400).send({
+          error: "UNABLE_TO_LOGIN",
+        });
+      }
       res.status(400).send({})
     }
 });
