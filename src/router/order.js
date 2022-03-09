@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/user.js");
 const Order = require("../models/order.js");
-const auth = require("../middleware/auth.js");
+const {auth} = require("../middleware/auth.js");
 
 router.post('/users/orders',auth,async(req, res)=>{
     try{

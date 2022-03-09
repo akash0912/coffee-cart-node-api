@@ -18,4 +18,15 @@ const auth=async(req, res, next)=>{
     }
 }
 
-module.exports = auth
+const authRole=(role)=>{
+    return (req, res, next)=>{
+       try{ if(req.user.role !== "admin"){
+            throw new Error('Not Allowed')
+            }
+            next()
+        }catch(e){
+            res.status(403).send(e)
+        }
+    }
+}
+module.exports = {auth, authRole}

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require('../models/user.js')
-const auth = require('../middleware/auth.js')
+const {auth} = require('../middleware/auth.js')
 router.post("/signup", async (req, res) => {
   try{
     const user = new User(req.body)
@@ -36,7 +36,9 @@ router.post('/login',async(req, res)=>{
           error: "UNABLE_TO_LOGIN",
         });
       }
-      res.status(400).send({})
+      res.status(400).send({
+        error: "UNABLE_TO_LOGIN",
+      });
     }
 });
 
